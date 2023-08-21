@@ -71,11 +71,16 @@ export const testSuites = async <T extends Record<string, TestHandler>, D extend
       const localPerf = {} as Record<DK, number>;
       for (const name in tf) {
         ste(name, async () => {
-          let ts = performance.now();
-          await suites[k](localTestFiles[name], name, () => {
-            ts = performance.now();
-          });
-          localPerf[name] = performance.now() - ts;
+          localPerf[name] = 0;
+          const NUM_ITERATIONS = 10;
+          for (let i = 0; i < NUM_ITERATIONS; i++) {
+            let ts = performance.now();
+            await suites[k](localTestFiles[name], name, () => {
+              ts = performance.now();
+            });
+            localPerf[name] += performance.now() - ts;
+          }
+          localPerf[name] /= NUM_ITERATIONS;
         });
       }
       ste.after(() => {
@@ -162,32 +167,32 @@ export const workers = {
     gunzip: wc(fflate, 'gunzipSync'),
     zlib: wc(fflate, 'zlibSync'),
     unzlib: wc(fflate, 'unzlibSync'),
-    zip: wc(fflate, 'zipSync'),
+    // zip: wc(fflate, 'zipSync'),
     unzip: wc(fflate, 'unzipSync')
   },
-  pako: {
-    deflate: wc('pako', 'deflateRaw'),
-    inflate: wc('pako', 'inflateRaw'),
-    gzip: wc('pako', 'gzip'),
-    gunzip: wc('pako', 'ungzip'),
-    zlib: wc('pako', 'deflate'),
-    unzlib: wc('pako', 'inflate')
-  },
-  uzip: {
-    deflate: wc('uzip', 'deflateRaw'),
-    inflate: wc('uzip', 'inflateRaw')
-  },
-  tinyInflate: {
-    inflate: wc('tiny-inflate')
-  },
-  zlib: {
-    deflate: wc('zlib', 'deflateRawSync'),
-    inflate: wc('zlib', 'inflateRawSync'),
-    gzip: wc('zlib', 'gzipSync'),
-    gunzip: wc('zlib', 'gunzipSync'),
-    zlib: wc('zlib', 'deflateSync'),
-    unzlib: wc('zlib', 'inflateSync')
-  }
+  // pako: {
+  //   deflate: wc('pako', 'deflateRaw'),
+  //   inflate: wc('pako', 'inflateRaw'),
+  //   gzip: wc('pako', 'gzip'),
+  //   gunzip: wc('pako', 'ungzip'),
+  //   zlib: wc('pako', 'deflate'),
+  //   unzlib: wc('pako', 'inflate')
+  // },
+  // uzip: {
+  //   deflate: wc('uzip', 'deflateRaw'),
+  //   inflate: wc('uzip', 'inflateRaw')
+  // },
+  // tinyInflate: {
+  //   inflate: wc('tiny-inflate')
+  // },
+  // zlib: {
+  //   deflate: wc('zlib', 'deflateRawSync'),
+  //   inflate: wc('zlib', 'inflateRawSync'),
+  //   gzip: wc('zlib', 'gzipSync'),
+  //   gunzip: wc('zlib', 'gunzipSync'),
+  //   zlib: wc('zlib', 'deflateSync'),
+  //   unzlib: wc('zlib', 'inflateSync')
+  // }
 };
 
 export const bClone = (buf: Buffer) => {

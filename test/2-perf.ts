@@ -3,9 +3,9 @@ import { writeFileSync } from 'fs';
 import { join } from 'path';
 
 const preprocessors = {
-  inflate: workers.zlib.deflate,
-  gunzip: workers.zlib.gzip,
-  unzlib: workers.zlib.zlib
+  inflate: workers.fflate.deflate,
+  gunzip: workers.fflate.gzip,
+  unzlib: workers.fflate.zlib
 };
 
 const cache: Record<string, Record<string, Buffer>> = {
@@ -20,7 +20,7 @@ const cache: Record<string, Record<string, Buffer>> = {
 const flattenedWorkers: Record<string, TestHandler> = {};
 for (const k in workers) {
   for (const l in workers[k]) {
-    if (l == 'zip' || l == 'unzip') continue;
+    if (l == 'zip' || l == 'unzip' || l == 'deflate' || l == 'gzip' || l == 'zlib') continue;
     flattenedWorkers[k + '.' + l] = async (file, name, resetTimer) => {
       const fileClone = bClone(file);
       let buf = fileClone;

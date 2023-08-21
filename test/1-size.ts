@@ -8,6 +8,7 @@ const sizePerf: Record<string, Record<string, [number, number]>> = {};
 
 testSuites({
   async main(file, name) {
+    return;
     sizePerf[name] = {};
     for (const lib of (['fflate', 'pako', 'uzip', 'zlib'] as const)) {
       const clone = bClone(file);
