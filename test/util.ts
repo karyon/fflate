@@ -151,7 +151,8 @@ const wc = (pkg: string, method?: string): Workerized => {
   }
 }
 
-const fflate = resolve(__dirname, '..');
+let fflate = resolve(__dirname, '..');
+fflate = fflate.replace(/\\/g, '/', );
 
 export const workers = {
   fflate: {
